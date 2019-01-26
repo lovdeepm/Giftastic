@@ -29,7 +29,7 @@ $("#add-team").on("click", function() {
 
 function displayGifs() {
     var teamsearch = $(this).attr("data-name");
-    var queryURL = "http://api.giphy.com/v1/gifs/search?q=" +
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
       teamsearch + "&api_key=xmdirSkPXMngsS6Y5xLP0srxBkMiKLeH&limit=10";
 
     $.ajax({
