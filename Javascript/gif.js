@@ -1,33 +1,33 @@
 
-var teams = ["SF 49ers", "Pittsburg Steelers", "Oakland Raiders", "New England Patriots", "LA Chargers", "LA Rams", "Seattle Seahawks", "KC Chiefs", "Dallas Cowboys", "Houston Texans", "Miami Dolphins", "Green Bay Packers"];
+var topic = ["SF 49ers", "Pittsburg Steelers", "Oakland Raiders", "New England Patriots", "LA Chargers", "LA Rams", "Seattle Seahawks", "KC Chiefs", "Dallas Cowboys", "Houston Texans", "Miami Dolphins", "Green Bay Packers"];
 
 function renderButtons() {
     $("#buttons-view").empty();
 
-    for (var i = 0; i < teams.length; i++) {
+    for (var i = 0; i < topic.length; i++) {
 
         var newbutton = $("<button>");
         newbutton.addClass("team");
-        newbutton.attr("data-name", teams[i]);
-        newbutton.text(teams[i]);
+        newbutton.attr("data-name", topic[i]);
+        newbutton.text(topic[i]);
         $("#buttons-view").append(newbutton);
 
     }
 }
 
-$("#add-team").on("click", function(event) {
+$("#add-team").on("click", function() {
 
-    event.preventDefault();
     var team = $("#team-input").val().trim();
-    teams.push(team)
+    topic.push(team)
 
     renderButtons();
+    return false;
 
 })
 
-renderButtons();
 
-$("button").on("click", function() {
+
+function displayGifs() {
     var teamsearch = $(this).attr("data-name");
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
       teamsearch + "&api_key=xmdirSkPXMngsS6Y5xLP0srxBkMiKLeH&limit=10";
@@ -46,15 +46,34 @@ $("button").on("click", function() {
 
           var p = $("<p>").text("Rating: " + rating);
 
-          var personImage = $("<img>");
-          personImage.attr("src", results[i].images.fixed_height.url);
+          var teamImage = $("<img>");
+          teamImage.attr("src", results[i].images.fixed_height_still.url);
+          teamImage.attr("data-still", results[i].images.fixed_height_still.url);
+          teamImage.attr("data-state", 'still');
+          teamImage.addClass("gif");
+          teamImage.attr('data-animate', results[i].images.fixed_height.url)
 
           gifDiv.prepend(p);
-          gifDiv.prepend(personImage);
+          gifDiv.prepend(teamImage);
 
           $("#gifs-appear-here").prepend(gifDiv);
 
          
         }
       });
+    }
+
+      $(document).on("click",".gif", function() {
+        var state = $(this).attr("data-state")
+        if(state === "still") {
+            $(this).attr("src", $(this).attr("data-animate"));
+            $(this).attr("data-state", "animate")
+          } else {
+            $(this).attr("src", $(this).attr("data-still"));
+            $(this).attr("data-state", "still")
+          };
   });
+$(document).on('click',".team", displayGifs);
+
+  renderButtons();
+
